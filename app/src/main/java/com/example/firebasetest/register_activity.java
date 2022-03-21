@@ -3,8 +3,10 @@ package com.example.firebasetest;
 import static android.content.ContentValues.TAG;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -118,6 +120,8 @@ public class register_activity extends AppCompatActivity {
                 });
             }
         });
+
+
 
         mLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
