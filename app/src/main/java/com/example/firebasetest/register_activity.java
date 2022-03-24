@@ -102,20 +102,7 @@ public class register_activity extends AppCompatActivity {
 
                             //send verification link
 
-                            FirebaseUser fuser = fAuth.getCurrentUser();
-                            fuser.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void unused) {
-                                    Toast.makeText(register_activity.this,"Verification Email Has been Sent.",Toast.LENGTH_SHORT).show();
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.d(TAG,"onFailure: Email not sent " + e.getMessage());
-
-
-                                }
-                            });
+                           
 
 
 
