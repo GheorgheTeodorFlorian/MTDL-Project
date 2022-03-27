@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     FirebaseFirestore fStore;
     String userId;
     Button resendCode;
-
+    ImageButton settings;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
         fullName = findViewById(R.id.profileName);
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
+        settings = findViewById(R.id.imageButton2);
+
 
         resendCode = findViewById(R.id.resendCode);
         verifyMsg = findViewById(R.id.verifyMsg);
@@ -53,6 +57,16 @@ public class MainActivity extends AppCompatActivity {
         if(!user.isEmailVerified()){
             resendCode.setVisibility(View.VISIBLE);
             verifyMsg.setVisibility(View.VISIBLE);
+
+
+
+            settings.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    startActivity(new Intent(getApplicationContext(),SettingsActivityActivity.class));
+                    finish();
+                }
+            });
 
             resendCode.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -87,6 +101,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+
+
 
     public void logout(View view){
         FirebaseAuth.getInstance().signOut();
