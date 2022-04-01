@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         fullName = findViewById(R.id.profileName);
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
-        settings = findViewById(R.id.imageButton2);
+        settings = (ImageButton) findViewById(R.id.imageButton2);
 
 
         resendCode = findViewById(R.id.resendCode);
@@ -53,20 +53,39 @@ public class MainActivity extends AppCompatActivity {
 
         userId = fAuth.getCurrentUser().getUid();
         FirebaseUser user = fAuth.getCurrentUser();
+        resendCode.setVisibility(View.GONE);
+        verifyMsg.setVisibility(View.GONE);
+
+
+
+
+
+
+
+        if(user.isEmailVerified()){
+            settings.setVisibility(View.VISIBLE);
+            settings.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(view.getContext(),"Verification Email Has been Sent.",Toast.LENGTH_SHORT).show();
+                    System.out.println("HELLOOOOOO");
+                    Intent intent = new Intent(MainActivity.this,SettingsActivityActivity.class);
+                    Toast.makeText(view.getContext(),"Verification Email Has been Sent.",Toast.LENGTH_SHORT).show();
+
+                    startActivity(intent);
+
+                }
+            });
+        }
+
+
 
         if(!user.isEmailVerified()){
             resendCode.setVisibility(View.VISIBLE);
             verifyMsg.setVisibility(View.VISIBLE);
+            settings.setVisibility(View.INVISIBLE);
 
 
-
-            settings.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    startActivity(new Intent(getApplicationContext(),SettingsActivityActivity.class));
-                    finish();
-                }
-            });
 
             resendCode.setOnClickListener(new View.OnClickListener() {
                 @Override
