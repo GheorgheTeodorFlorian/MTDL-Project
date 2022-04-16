@@ -67,13 +67,8 @@ public class MainActivity extends AppCompatActivity {
             settings.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(view.getContext(),"Verification Email Has been Sent.",Toast.LENGTH_SHORT).show();
-                    System.out.println("HELLOOOOOO");
                     Intent intent = new Intent(MainActivity.this,SettingsActivityActivity.class);
-                    Toast.makeText(view.getContext(),"Verification Email Has been Sent.",Toast.LENGTH_SHORT).show();
-
                     startActivity(intent);
-
                 }
             });
         }
