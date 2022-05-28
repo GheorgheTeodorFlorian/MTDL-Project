@@ -46,14 +46,17 @@ public class MainActivity extends AppCompatActivity {
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
     String userId;
-    Button resendCode;
+    Button resendCode,courses;
     ImageButton settings;
     ImageView profilepic;
     Uri imageUri;
     FirebaseStorage storage;
     StorageReference storageReference;
     String userID;
-    DocumentReference documentReference;
+    DocumentReference documentReference,buttonReference;
+    DocumentSnapshot checkbutton;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,8 +69,10 @@ public class MainActivity extends AppCompatActivity {
         settings = (ImageButton) findViewById(R.id.imageButton2);
         userID = fAuth.getCurrentUser().getUid();
         documentReference = fStore.collection("users").document(userID);
+        buttonReference = fStore.collection("users").document(userID);
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
+        courses = findViewById(R.id.courses);
 
         profilepic = findViewById(R.id.imageView3);
         resendCode = findViewById(R.id.resendCode);
@@ -77,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
         FirebaseUser user = fAuth.getCurrentUser();
         resendCode.setVisibility(View.GONE);
         verifyMsg.setVisibility(View.GONE);
+
 
           documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
              @Override
@@ -93,6 +99,24 @@ public class MainActivity extends AppCompatActivity {
              }
          });
 
+        buttonReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                String accountType = (String) documentSnapshot.get("accountType");
+                System.out.println(accountType);
+                if(accountType.equals("Teacher")){
+                    courses.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+
+        courses.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(),CoursesActivity.class));
+            }
+        });
 
 
         profilepic.setOnClickListener(new View.OnClickListener() {
