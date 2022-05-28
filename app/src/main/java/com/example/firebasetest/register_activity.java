@@ -114,6 +114,8 @@ public class register_activity extends AppCompatActivity {
                             user.put("fName",fullName);
                             user.put("email",email);
                             user.put("phone",phone);
+                            user.put("accountType","Student");
+
                             documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {

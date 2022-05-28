@@ -7,6 +7,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,6 +21,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -25,8 +29,16 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import org.w3c.dom.Document;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+import io.grpc.Context;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,6 +48,12 @@ public class MainActivity extends AppCompatActivity {
     String userId;
     Button resendCode;
     ImageButton settings;
+    ImageView profilepic;
+    Uri imageUri;
+    FirebaseStorage storage;
+    StorageReference storageReference;
+    String userID;
+    DocumentReference documentReference;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,8 +64,12 @@ public class MainActivity extends AppCompatActivity {
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
         settings = (ImageButton) findViewById(R.id.imageButton2);
+        userID = fAuth.getCurrentUser().getUid();
+        documentReference = fStore.collection("users").document(userID);
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
 
-
+        profilepic = findViewById(R.id.imageView3);
         resendCode = findViewById(R.id.resendCode);
         verifyMsg = findViewById(R.id.verifyMsg);
 
@@ -56,10 +78,29 @@ public class MainActivity extends AppCompatActivity {
         resendCode.setVisibility(View.GONE);
         verifyMsg.setVisibility(View.GONE);
 
+          documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+             @Override
+             public void onSuccess(DocumentSnapshot documentSnapshot) {
+                 String picturename = (String) documentSnapshot.get("profilePic");
+                 StorageReference ref = storageReference.child("images/" + picturename);
+                 ref.getBytes(1024*1024*1024).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                     @Override
+                     public void onSuccess(byte[] bytes) {
+                         Bitmap bitmap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
+                         profilepic.setImageBitmap(bitmap);
+                     }
+                 });
+             }
+         });
 
 
 
-
+        profilepic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                choosePicture();
+            }
+        });
 
 
         if(user.isEmailVerified()){
@@ -116,8 +157,37 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void choosePicture() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent,1);
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null){
+            imageUri = data.getData();
+            profilepic.setImageURI(imageUri);
+            uploadPicture();
+        }
+    }
 
+    private void uploadPicture() {
+        String randomKey = UUID.randomUUID().toString();
+        StorageReference ref = storageReference.child("images/" + randomKey);
+
+        Map<String,Object> user = new HashMap<>();
+        user.put("profilePic",randomKey);
+        documentReference.update(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                Log.d(TAG,"User Profile Picture Updated For: "+ userID);
+            }
+        });
+        ref.putFile(imageUri);
+    }
 
     public void logout(View view){
         FirebaseAuth.getInstance().signOut();
