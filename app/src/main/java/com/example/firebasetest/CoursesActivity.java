@@ -86,6 +86,10 @@ public class CoursesActivity extends AppCompatActivity {
         TextView textDesc = new TextView(this);
         ImageView image = new ImageView(this);
         Button but = new Button(this);
+        but.setText("Open Course");
+        textNam.setTextColor(Color.parseColor("#000000"));
+        textNam.setTextSize(50);
+        textDesc.setTextColor(Color.parseColor("#000000"));
 
         layout = (LinearLayout) findViewById(R.id.rootlayout);
 
