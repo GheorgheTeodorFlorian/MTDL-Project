@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     FirebaseAuth fAuth;
     FirebaseFirestore fStore;
     String userId;
-    Button resendCode,courses;
+    Button resendCode,courses,studentcourses;
     ImageButton settings;
     ImageView profilepic;
     Uri imageUri;
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
         courses = findViewById(R.id.courses);
-
+        studentcourses=findViewById(R.id.coursesstudent);
         profilepic = findViewById(R.id.imageView3);
         resendCode = findViewById(R.id.resendCode);
         verifyMsg = findViewById(R.id.verifyMsg);
@@ -106,10 +106,17 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println(accountType);
                 if(accountType.equals("Teacher")){
                     courses.setVisibility(View.VISIBLE);
+                }else{
+                    studentcourses.setVisibility(View.VISIBLE);
                 }
             }
         });
-
+        studentcourses.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(),StudentCoursesActivity.class));
+            }
+        });
 
         courses.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -6,17 +6,15 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.media.Image;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -24,25 +22,22 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import org.w3c.dom.Text;
-
+import java.util.ArrayList;
 import java.util.Map;
 
-public class CoursesActivity extends AppCompatActivity {
+public class StudentCoursesActivity extends AppCompatActivity {
 
-    Button createCourses;
     LinearLayout layout;
     StorageReference storageReference;
     FirebaseFirestore fs;
+    FirebaseAuth fAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_courses);
+        setContentView(R.layout.activity_student_courses);
         fs = FirebaseFirestore.getInstance();
-        createCourses = findViewById(R.id.createCourses);
         storageReference =  FirebaseStorage.getInstance().getReference();
-
-
+        fAuth = FirebaseAuth.getInstance();
         Query q = fs.collection("courses");
         q.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
@@ -56,31 +51,21 @@ public class CoursesActivity extends AppCompatActivity {
                     if(map.containsKey("ImageName")){
                         imageName = map.get("ImageName").toString();
                     }
-
+                    if(map.containsKey("students")){
+                        ArrayList<String> students = (ArrayList<String>) map.get("students");
+                        if(!students.contains(fAuth.getCurrentUser().getUid())){
+                            continue;
+                        }
+                    }else{
+                        continue;
+                    }
                     tryout(name,description,imageName,i,qs.getId());
                     i++;
                 }
             }
         });
 
-        createCourses.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(),NewCourse.class));
-            }
-        });
-
-
     }
-
-
-
-
-
-
-
-
-
 
     private void tryout(String name,String desc,String imagename,int index,String id) {
         TextView textNam = new TextView(this);
@@ -95,12 +80,12 @@ public class CoursesActivity extends AppCompatActivity {
         layout = (LinearLayout) findViewById(R.id.rootlayout);
 
 
-                textNam.setId(100 + index);
-                textDesc.setId(200 + index);
-                image.setId(300+index);
-                but.setId(400+index);
-                textDesc.setText(desc);
-                textNam.setText(name);
+        textNam.setId(100 + index);
+        textDesc.setId(200 + index);
+        image.setId(300+index);
+        but.setId(400+index);
+        textDesc.setText(desc);
+        textNam.setText(name);
 
         if(!imagename.equals("")) {
             StorageReference ref = storageReference.child("images/" + imagename);
@@ -113,29 +98,25 @@ public class CoursesActivity extends AppCompatActivity {
             });
         }
 
-                layout.addView(textNam);
-                layout.addView(textDesc);
-                layout.addView(image);
-                layout.addView(but);
-                but.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent i = new Intent(getApplicationContext(), SelectedCourseActivity.class);
-                        i.putExtra("id",id);
-                        startActivity(i);
+        layout.addView(textNam);
+        layout.addView(textDesc);
+        layout.addView(image);
+        layout.addView(but);
+        but.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getApplicationContext(), StudentSelectedCourseActivity.class);
+                i.putExtra("id",id);
+                startActivity(i);
 
 
 
-                    }
-                });
-
-
-
-
-
-        }
+            }
+        });
 
 
 
 
+
+    }
 }

@@ -12,6 +12,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FirebaseTest">
         <activity
+            android:name=".StudentSelectedCourseActivity"
+            android:exported="true" />
+        <activity
+            android:name=".StudentCoursesActivity"
+            android:exported="true" />
+        <activity
+            android:name=".StudentAddActivity"
+            android:exported="true" />
+        <activity
+            android:name=".SelectedCourseActivity"
+            android:exported="true" />
+        <activity
             android:name=".NewCourse"
             android:exported="true" />
         <activity
