@@ -44,7 +44,7 @@
         android:ems="10"
         android:inputType="textPersonName"
         android:padding="10dp"
-        android:text="Full Name"
+        android:hint="Enter User name"
         android:textColor="#000000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -68,13 +68,13 @@
         app:layout_constraintHorizontal_bias="0.437"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/fullName"
-        tools:text="Email Adress" />
+        android:hint="Email Adress" />
 
     <Button
         android:id="@+id/registerBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Button"
+        android:text="Register User"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -113,6 +113,7 @@
         android:layout_width="323dp"
         android:layout_height="45dp"
         android:ems="10"
+        android:hint="Phone Number"
         android:inputType="phone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
